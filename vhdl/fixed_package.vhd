@@ -16,6 +16,9 @@ PACKAGE fixed_package IS
 	function "+"(arg_L: integer; arg_R: fixed) return fixed;
 	function "-"(arg_L: fixed; arg_R: integer) return fixed;
 	function "-"(arg_L: integer; arg_R: fixed) return fixed;
+	function "*"(arg_L, arg_R: fixed) return fixed;
+	function "*"(arg_L: fixed; arg_R: integer) return fixed;
+	function "*"(arg_L: integer; arg_R: fixed) return fixed;
 
 
 END fixed_package;
@@ -219,27 +222,42 @@ end to_integer;
 
 --"+"
 function "+"(arg_L, arg_R: fixed) return fixed is
-	VARIABLE s : fixed(arg_L'LEFT DOWNTO arg_L'RIGHT);
+	VARIABLE s: fixed(arg_L'LEFT DOWNTO arg_L'RIGHT);
 	VARIABLE s1 : fixed(arg_R'LEFT DOWNTO arg_R'RIGHT);
 	begin
 		 if (arg_L'left = arg_R'left) then
 		 return ADD_SUB_FIXED(arg_L, arg_R, '0');
 		 elsif arg_L'left > arg_R'left then
-			if arg_R(arg_R'left) = '1' then s := (arg_L'LEFT downto arg_R'LEFT =>'1', others => '0');
-			else s := (arg_L'LEFT downto arg_R'LEFT =>'0', others => '0');
-			end if;
-			abc: for i in arg_R'LEFT downto arg_L'RIGHT loop
+			if arg_R(arg_R'left) = '1' then
+				s := (arg_L'LEFT downto arg_R'LEFT =>'0', others => '0');
+				s1:= comp2_fixed(arg_R);
+				abc: for i in arg_R'LEFT downto arg_L'RIGHT loop
+							s(i) := s1(i);
+				end loop abc;
+				s := comp2_fixed(s);
+			else 
+			s  := (arg_L'LEFT downto arg_R'LEFT =>'0', others => '0');
+			s1 := arg_R;
+			ppp: for i in arg_R'LEFT downto arg_L'RIGHT loop
 							s(i) := arg_R(i);
-			end loop abc;
+			end loop ppp;
+			end if;
 			return ADD_SUB_FIXED(arg_L, s, '0');
 		
 		else 
-			if arg_L(arg_L'left) = '1' then s1 := (arg_R'LEFT downto arg_L'LEFT =>'1', others => '0');
-			else s1 := (arg_R'LEFT downto arg_L'LEFT =>'0', others => '0');
-			end if;
-			def: for i in arg_L'LEFT downto arg_R'RIGHT loop
+			if arg_L(arg_L'left) = '1' then
+				s1 := (arg_R'LEFT downto arg_L'LEFT =>'1', others => '0');
+				s:= comp2_fixed(arg_L);
+				def: for i in arg_L'LEFT downto arg_R'RIGHT loop
+							s1(i) := s(i);
+				end loop def;
+				s1 := comp2_fixed(s1);
+			else 
+				s1 := (arg_R'LEFT downto arg_L'LEFT =>'0', others => '0');
+				ghi: for i in arg_L'LEFT downto arg_R'RIGHT loop
 							s1(i) := arg_L(i);
-			end loop def;
+				end loop ghi;
+			end if;
 			return ADD_SUB_FIXED(arg_R, s1, '0');
 		end if;
 END "+";
@@ -308,4 +326,86 @@ function "-"(arg_L: integer; arg_R: fixed) return fixed is
 		saida := fix + arg_L;
 		return saida;
 end "-";
+
+
+function "*"(arg_L, arg_R: fixed) return fixed is
+	VARIABLE s: fixed(arg_L'LEFT DOWNTO arg_L'RIGHT);
+	VARIABLE s1 : fixed(arg_R'LEFT DOWNTO arg_R'RIGHT);
+	begin
+		 if (arg_L'left = arg_R'left) then
+		 return mult_fixed(arg_L, arg_R);
+		 elsif arg_L'left > arg_R'left then
+			if arg_R(arg_R'left) = '1' then
+				s := (arg_L'LEFT downto arg_R'LEFT =>'0', others => '0');
+				s1:= comp2_fixed(arg_R);
+				abc: for i in arg_R'LEFT downto arg_L'RIGHT loop
+							s(i) := s1(i);
+				end loop abc;
+				s := comp2_fixed(s);
+			else 
+			s  := (arg_L'LEFT downto arg_R'LEFT =>'0', others => '0');
+			s1 := arg_R;
+			ppp: for i in arg_R'LEFT downto arg_L'RIGHT loop
+							s(i) := arg_R(i);
+			end loop ppp;
+			end if;
+			return mult_fixed(arg_L, s);
+		
+		else 
+			if arg_L(arg_L'left) = '1' then
+				s1 := (arg_R'LEFT downto arg_L'LEFT =>'1', others => '0');
+				s:= comp2_fixed(arg_L);
+				ghi: for i in arg_L'LEFT downto arg_R'RIGHT loop
+							s1(i) := s(i);
+				end loop ghi;
+				s1 := comp2_fixed(s1);
+			else 
+				s1 := (arg_R'LEFT downto arg_L'LEFT =>'0', others => '0');
+				def: for i in arg_L'LEFT downto arg_R'RIGHT loop
+							s1(i) := arg_L(i);
+				end loop def;
+			end if;
+			return mult_fixed(arg_R, s1);
+		end if;
+END "*";
+
+function "*"(arg_L: fixed; arg_R: integer) return fixed is
+	variable saida, fix : fixed(arg_L'left downto arg_L'right);
+	variable int : fixed(arg_L'left downto 0);
+	begin
+		int  := to_fixed(arg_R, arg_L'left,0);
+		if arg_L'right<0 then
+			abc: for i in arg_L'left downto 0 loop
+					fix(i) := int(i);
+			end loop abc;
+			def: for i in -1 downto arg_L'right loop
+					fix(i) := '0';
+			end loop def;
+		else 
+			fix := int;
+		end if;
+		
+		saida := arg_L * fix;
+		return saida;
+end "*";
+
+function "*"(arg_L: integer; arg_R: fixed) return fixed is
+	variable saida, fix : fixed(arg_R'left downto arg_R'right);
+	variable int              : fixed(arg_R'left downto 0);
+	begin
+		int  := to_fixed(arg_L, arg_R'left,0);
+		if arg_R'right<0 then
+			abc: for i in arg_R'left downto 0 loop
+					fix(i) := int(i);
+			end loop abc;
+			def: for i in -1 downto arg_R'right loop
+					fix(i) := '0';
+			end loop def;
+		else 
+			fix := int;
+		end if;
+		
+		saida := arg_R * fix;
+		return saida;
+end "*";	
 END fixed_package;
