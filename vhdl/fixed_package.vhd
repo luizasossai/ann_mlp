@@ -9,7 +9,9 @@ PACKAGE fixed_package IS
 	TYPE fixed IS ARRAY (fixed_range RANGE <>) OF bit;
 	TYPE matrix IS ARRAY (natural RANGE <>, natural RANGE <>) OF bit;
 	function to_fixed (arg_L: integer; max_range: fixed_range := MAX_IND; min_range: fixed_range := 0) return fixed;
+	function to_fixed (arg_L: real; max_range: fixed_range := MAX_IND; min_range: fixed_range := MIN_IND) return fixed;
 	function to_integer (arg_L: fixed) return integer;
+	function to_real (arg_L: fixed) return real;
 	function "+"(arg_L, arg_R: fixed) return fixed;
 	function "-"(arg_L, arg_R: fixed) return fixed;
 	function "+"(arg_L: fixed; arg_R: integer) return fixed;
@@ -408,4 +410,44 @@ function "*"(arg_L: integer; arg_R: fixed) return fixed is
 		saida := arg_R * fix;
 		return saida;
 end "*";	
+
+function to_fixed (arg_L: real; max_range: fixed_range:= MAX_IND; min_range: fixed_range:= MIN_IND) return fixed is
+	variable d : real;
+	variable a : real;
+   variable s : fixed(max_range downto min_range);
+   begin
+		d := abs(arg_L);
+		for i in max_range-1 DOWNTO min_range loop
+			a := 2.0**(i);
+			if d >= a then 
+				s(i) := '1';
+				d := d-2.0**i;
+			else s(i) := '0';
+			end if;
+      end loop;		
+      s(max_range) := '0';
+      if arg_L < 0.0 then return comp2_fixed(s);
+      else return s;
+      end if;
+end to_fixed;
+
+function to_real (arg_L: fixed) return real is
+	variable int : real;
+	variable temp   : fixed(arg_L'left downto arg_L'right);
+	begin
+	int := 0.0;
+	if arg_L(arg_L'left) ='1' then temp := COMP2_FIXED(arg_L);
+	else temp:= arg_L;
+	end if;
+	abc: for i in arg_L'left-1 downto arg_L'right loop
+		if temp(i) ='1' then
+			int := int + (2.0**i);
+		else int := int;
+		end if;
+	end loop abc;
+	if arg_L(arg_L'left) ='1' then int := -int;
+	else int := int;
+	end if;
+	return int;
+end to_real;
 END fixed_package;
