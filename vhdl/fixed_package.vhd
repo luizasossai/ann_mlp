@@ -21,7 +21,12 @@ PACKAGE fixed_package IS
 	function "*"(arg_L, arg_R: fixed) return fixed;
 	function "*"(arg_L: fixed; arg_R: integer) return fixed;
 	function "*"(arg_L: integer; arg_R: fixed) return fixed;
-
+	function "+"(arg_L: fixed; arg_R: real) return fixed;
+	function "+"(arg_L: real; arg_R: fixed) return fixed;
+	function "-"(arg_L: fixed; arg_R: real) return fixed;
+	function "-"(arg_L: real; arg_R: fixed) return fixed;
+	function "*"(arg_L: fixed; arg_R: real) return fixed;
+	function "*"(arg_L: real; arg_R: fixed) return fixed;
 
 END fixed_package;
 
@@ -314,7 +319,7 @@ end "+";
 
 function "-"(arg_L: fixed; arg_R: integer) return fixed is
 	variable saida : fixed(arg_L'left downto arg_L'right);
-	variable int: integer;
+	variable int: integer range -2**15 to 2**15-1;
 	begin
 		int := -arg_R;
 		saida := int + arg_L;
@@ -412,8 +417,8 @@ function "*"(arg_L: integer; arg_R: fixed) return fixed is
 end "*";	
 
 function to_fixed (arg_L: real; max_range: fixed_range:= MAX_IND; min_range: fixed_range:= MIN_IND) return fixed is
-	variable d : real;
-	variable a : real;
+	variable d : real range -2.0**(max_range) to 2.0**(max_range);
+	variable a : real range -2.0**(max_range) to 2.0**(max_range);
    variable s : fixed(max_range downto min_range);
    begin
 		d := abs(arg_L);
@@ -432,7 +437,7 @@ function to_fixed (arg_L: real; max_range: fixed_range:= MAX_IND; min_range: fix
 end to_fixed;
 
 function to_real (arg_L: fixed) return real is
-	variable int : real;
+	variable int : real range -2.0**(arg_L'left) to 2.0**(arg_L'left);
 	variable temp   : fixed(arg_L'left downto arg_L'right);
 	begin
 	int := 0.0;
@@ -450,4 +455,52 @@ function to_real (arg_L: fixed) return real is
 	end if;
 	return int;
 end to_real;
+
+function "+"(arg_L: fixed; arg_R: real) return fixed is
+variable saida, int : fixed(arg_L'left downto arg_L'right);
+	begin
+		int   := to_fixed(arg_R, arg_L'left,arg_L'right);
+		saida := arg_L + int;
+		return saida;
+end "+";
+
+function "+"(arg_L: real; arg_R: fixed) return fixed is
+variable saida, int : fixed(arg_R'left downto arg_R'right);
+	begin
+		int   := to_fixed(arg_L, arg_R'left,arg_R'right);
+		saida := arg_R + int;
+		return saida;
+end "+";
+
+function "-"(arg_L: fixed; arg_R: real) return fixed is
+	variable saida, int : fixed(arg_L'left downto arg_L'right);
+	begin
+		int   := to_fixed(arg_R, arg_L'left,arg_L'right);
+		saida := arg_L - int;
+		return saida;
+end "-";
+
+function "-"(arg_L: real; arg_R: fixed) return fixed is
+	variable saida, int : fixed(arg_R'left downto arg_R'right);
+	begin
+		int   := to_fixed(arg_L, arg_R'left,arg_R'right);
+		saida := int - arg_R;
+		return saida;
+end "-";
+
+function "*"(arg_L: fixed; arg_R: real) return fixed is
+	variable saida, int : fixed(arg_L'left downto arg_L'right);
+	begin
+		int   := to_fixed(arg_R, arg_L'left,arg_L'right);
+		saida := int*arg_L;
+		return saida;
+end "*";
+
+function "*"(arg_L: real; arg_R: fixed) return fixed is
+	variable saida, int : fixed(arg_R'left downto arg_R'right);
+	begin
+		int   := to_fixed(arg_L, arg_R'left,arg_R'right);
+		saida := int*arg_R;
+		return saida;
+end "*";
 END fixed_package;
