@@ -1,33 +1,56 @@
---Aluno: Gustavo Simoes Belote / NUSP: 10748584
+---Aluno: Gustavo Simoes Belote / NUSP: 10748584
 --Aluna: Luiza Sossai de Souza / NUSP: 10748441
 
 PACKAGE fixed_package IS
 
 	CONSTANT MAX_IND : integer := 15;
 	CONSTANT MIN_IND : integer := -15;
+	
 	SUBTYPE fixed_range IS integer RANGE MIN_IND TO MAX_IND;
+	
 	TYPE fixed IS ARRAY (fixed_range RANGE <>) OF bit;
 	TYPE matrix IS ARRAY (natural RANGE <>, natural RANGE <>) OF bit;
+	
+	--Conversao de tipo
+	--to_fixed
 	function to_fixed (arg_L: integer; max_range: fixed_range := MAX_IND; min_range: fixed_range := 0) return fixed;
 	function to_fixed (arg_L: real; max_range: fixed_range := MAX_IND; min_range: fixed_range := MIN_IND) return fixed;
+	
+	--to_integer
 	function to_integer (arg_L: fixed) return integer;
+	
+	--to_real
 	function to_real (arg_L: fixed) return real;
+	
+	--Aritmeticas
+	--"+"
 	function "+"(arg_L, arg_R: fixed) return fixed;
-	function "-"(arg_L, arg_R: fixed) return fixed;
 	function "+"(arg_L: fixed; arg_R: integer) return fixed;
 	function "+"(arg_L: integer; arg_R: fixed) return fixed;
+	function "+"(arg_L: fixed; arg_R: real) return fixed;
+	function "+"(arg_L: real; arg_R: fixed) return fixed;
+	
+	--"-"
+	function "-"(arg_L, arg_R: fixed) return fixed;
 	function "-"(arg_L: fixed; arg_R: integer) return fixed;
 	function "-"(arg_L: integer; arg_R: fixed) return fixed;
+	function "-"(arg_L: fixed; arg_R: real) return fixed;
+	function "-"(arg_L: real; arg_R: fixed) return fixed;
+	
+	--"*"
 	function "*"(arg_L, arg_R: fixed) return fixed;
 	function "*"(arg_L: fixed; arg_R: integer) return fixed;
 	function "*"(arg_L: integer; arg_R: fixed) return fixed;
-	function "+"(arg_L: fixed; arg_R: real) return fixed;
-	function "+"(arg_L: real; arg_R: fixed) return fixed;
-	function "-"(arg_L: fixed; arg_R: real) return fixed;
-	function "-"(arg_L: real; arg_R: fixed) return fixed;
 	function "*"(arg_L: fixed; arg_R: real) return fixed;
 	function "*"(arg_L: real; arg_R: fixed) return fixed;
-
+	
+	-- temporary
+	function MAXIMO (arg_L, arg_R: integer) return integer;
+	function MINIMO (arg_L, arg_R: integer) return integer;
+	function COMP1_FIXED (arg_L: fixed) return fixed;
+	function ADD_SUB_FIXED (arg_L, arg_R: fixed; c: bit) return fixed;
+	function mult_fixed (x1, x2: fixed) return fixed;
+	
 END fixed_package;
 
 PACKAGE BODY fixed_package IS
@@ -58,7 +81,7 @@ PACKAGE BODY fixed_package IS
 	
 --ADD_SUB_FIXED
 	FUNCTION ADD_SUB_FIXED (arg_L, arg_R: fixed; c: bit) RETURN fixed IS
-		VARIABLE v : bit := '0';
+		VARIABLE v : bit := c;
 		VARIABLE s : fixed(arg_L'LEFT DOWNTO arg_L'RIGHT);
 		BEGIN
 			FOR i IN arg_L'RIGHT TO  arg_L'LEFT LOOP
@@ -189,16 +212,21 @@ PACKAGE BODY fixed_package IS
  --to_fixed
     function to_fixed (arg_L: integer; max_range: fixed_range:= MAX_IND; min_range: fixed_range := 0) return fixed is
         variable d : integer range 0 to 2**max_range-1 := abs(arg_L);
-        variable s : fixed(max_range downto 0);
+        variable s : fixed(max_range downto min_range);
         variable valor_bit : integer range 0 to 1;
     begin
-        for i in min_range to max_range-1 loop
+        for i in 0 to max_range-1 loop
             valor_bit := d rem 2;
             d := d/2;
             if valor_bit = 0 then s(i) := '0';
             else s(i) := '1';
             end if;
         end loop;
+		  if min_range < 0 then
+			for i in -1 downto min_range loop
+				s(i) := '0';
+			end loop;
+		  end if;
         s(max_range) := '0';
         if arg_L < 0 then return comp2_fixed(s);
         else return s;
