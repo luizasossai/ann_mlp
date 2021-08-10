@@ -1,13 +1,27 @@
 # ann_mlp
-Artificial Neural Network - Multilayer Perceptron
+Projeto de Descrição de um Neurônio Artificial em VHDL
+Trabalho feito para a disciplina SEL0632 - Linguagem de Descrição de Hardware. Consistem em arquivos VHDL para a formação de um pacote para ponto fixo, um pacote com função de ativação para um neurônio artificial e um programa para neurônio artificial. É apresentado também test bench para os pacotes. É utilizada a versão VHDL de 1993
+
+
+Autores
+Luiza Sossai de Sousa - 10748441
+Gustavo Simões Belote - 10748584
+
+
+Arquivos
+* A pasta anm_mlp contém a pasta vhdl que contém os arquivos .vhd esses são:
+   * fixed_package: pacote que define o tipo fixed e funções que o utilizam.
+   * neuron_pkg: pacote que contém 2 funções de ativação para um neurônio artificial.
+   * neuron: entidade e arquitetura do corpo de 1 neurônio.
+   * fixed_package_tb: test bench para o fixed_package.
+   * activion_function_tb: test bench para a função de ativação.
+   * Além disso esta pasta contém o arquivo activation_function_tb.tcl
+* A pasta anm_mlp contém a pasta data que contém o arquivo de dados data_activ.dat, que contém dados para o test bench das funções de ativação.
+* A pasta anm_mlp contém a pasta doc que contém o relatório final do projeto
+
+
 Software necessários
 * ModelSim-Intel FPGA Edition software.
-
-Autores:
-
-Luiza Sossai de Sousa - 10748441
-
-Gustavo Simões Belote - 10748584
 
 
 Realizando os testes
