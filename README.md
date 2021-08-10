@@ -4,6 +4,7 @@ Software necessários
 * ModelSim-Intel FPGA Edition software.
 
 Autores:
+
 Luiza Sossai de Sousa - 10748441
 
 Gustavo Simões Belote - 10748584
