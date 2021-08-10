@@ -1,4 +1,4 @@
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 -- Activation_function_tb.vhd
 -- Testbench for Activation functions
 -- Input
@@ -12,12 +12,21 @@
 -- 		11/07/2020
 -- Version
 -- 		0.1		
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 -- *Qm.f: The unambiguous form of the "Q" notation. Since the entire word is a 
 -- 2's complement integer, a sign bit is implied. For example, Q1.30 describes 
 -- a number with 1 integer bit and 30 fractional bits stored as a 32-bit 2's
 -- complement. Source: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- COMENTÁRIO DO GRUPO:
+-- Foi necessário trocar a funcao de conversao to_integer para to_real no corpo da
+-- funcao de ativacao devido ao fato de que as funcoes criadas anteriormente para
+-- trabalhar com numeros em Q format apenas corta as casas menos significativas em
+-- vez de arrendondar para o numero mais proximo. Assim, ao fazer to_integer() a um
+-- numero equivalente a -0.985, obteriamos o valor 0, e não o valor -1, o que
+-- prejudicaria o funcionamento do codigo da funcao de ativacao. Felizmente, esse 
+-- problema pode ser facilmente contornado utilizando-se a funcao to_real.
+-----------------------------------------------------------------------------------
 
 use work.fixed_package.all;
 use std.textio.all;
@@ -59,12 +68,13 @@ architecture testbench of activation_function_tb is
 		constant maxSIG: fixed(X'range) := to_fixed(0.99997, X_LEFT, X_RIGHT);
 		constant minSIG: fixed(X'range) := to_fixed(0.00000, X_LEFT, X_RIGHT);
 		variable SIG: fixed(X'range);
+		
 	begin
-		if to_integer(X) >= 4 then		-- Se      X >= 4 SIG = +1.0
+		if to_real(X) >= 4.0 then		-- Se      X >= 4 SIG = +1.0
 			SIG := maxSIG;
-		elsif to_integer(X) < -4 then	-- Se      X < -4 SIG =  0.0
+		elsif to_real(X) < -4.0 then	-- Se      X < -4 SIG =  0.0
 			SIG := minSIG;
-		elsif to_integer(X) < 0 then	-- Se -4 < X < 0  SIG = (+0.03125*X+0.25)*X+0.5
+		elsif to_real(X) < 0.0 then	-- Se -4 < X < 0  SIG = (+0.03125*X+0.25)*X+0.5
 			SIG := (((a2p * X) + a1) * X) + a0;
 		else							-- Se  0 < X < 4  SIG = (-0.03125*X+0.25)*X+0.5
 			SIG := (((a2n * X )+ a1) * X) + a0;			
@@ -97,11 +107,11 @@ architecture testbench of activation_function_tb is
 		constant minSIG: fixed(X'range) := to_fixed(-1.00000, X_LEFT, X_RIGHT);
 		variable SIG: fixed(X'range);
 	begin
-		if to_integer(X) >= 4 then	-- Se      X >= 4 SIG = +1.0
+		if to_real(X) >= 4.0 then	-- Se      X >= 4 SIG = +1.0
 			SIG := maxSIG;
-		elsif to_integer(X) < -4 then	-- Se      X < -4 SIG = -1.0
+		elsif to_real(X) < -4.0 then	-- Se      X < -4 SIG = -1.0
 			SIG := minSIG;
-		elsif to_integer(X) < 0 then	-- Se -4 < X < 0  SIG = (+0.0625*X+0.5)*X
+		elsif to_real(X) < 0.0 then	-- Se -4 < X < 0  SIG = (+0.0625*X+0.5)*X
 			SIG := (a2p * X + a1) * X;
 		else				-- Se  0 < X < 4  SIG = (-0.0625*X+0.5)*X
 			SIG := (a2n * X + a1) * X;			

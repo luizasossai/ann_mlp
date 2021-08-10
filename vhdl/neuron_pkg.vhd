@@ -37,11 +37,11 @@ package body neuron_pkg is
 		constant minSIG: fixed(X'range) := to_fixed(0.00000, X_LEFT, X_RIGHT);
 		variable SIG: fixed(X'range);
 	begin
-		if to_integer(X) >= 4 then		-- Se      X >= 4 SIG = +1.0
+		if to_real(X) >= 4.0 then		-- Se      X >= 4 SIG = +1.0
 			SIG := maxSIG;
-		elsif to_integer(X) < -4 then		-- Se      X < -4 SIG =  0.0
+		elsif to_real(X) < -4.0 then		-- Se      X < -4 SIG =  0.0
 			SIG := minSIG;
-		elsif to_integer(X) < 0 then		-- Se -4 < X < 0  SIG = (+0.03125*X+0.25)*X+0.5
+		elsif to_real(X) < 0.0 then		-- Se -4 < X < 0  SIG = (+0.03125*X+0.25)*X+0.5
 			SIG := (((a2p * X) + a1) * X) + a0;
 		else				-- Se  0 < X < 4  SIG = (-0.03125*X+0.25)*X+0.5
 			SIG := (((a2n * X )+ a1) * X) + a0;			
@@ -75,13 +75,13 @@ package body neuron_pkg is
 		constant minSIG: fixed(X'range) := to_fixed(-1.00000, X_LEFT, X_RIGHT);
 		variable SIG: fixed(X'range);
 	begin
-		if to_integer(X) >= 4 then	-- Se      X >= 4 SIG = +1.0
+		if to_real(X) >= 4.0 then	-- Se      X >= 4 SIG = +1.0
 			SIG := maxSIG;
-		elsif to_integer(X) < -4 then	-- Se      X < -4 SIG = -1.0
+		elsif to_real(X) < -4.0 then	-- Se      X < -4 SIG = -1.0
 			SIG := minSIG;
-		elsif to_integer(X) < 0 then	-- Se -4 < X < 0  SIG = (+0.0625*X+0.5)*X
+		elsif to_real(X) < 0.0 then	-- Se -4 < X < 0  SIG = (+0.0625*X+0.5)*X
 			SIG := (a2p * X + a1) * X;
-		else				-- Se  0 < X < 4  SIG = (-0.0625*X+0.5)*X
+		else			-- Se  0 < X < 4  SIG = (-0.0625*X+0.5)*X
 			SIG := (a2n * X + a1) * X;			
 		end if;
 		return SIG;

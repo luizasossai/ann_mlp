@@ -3,7 +3,7 @@ use work.fixed_package.all;
 
 entity neuron is
 	generic (
-		  dendritos : integer := 9;
+		  dendritos : integer := 2;
 		  q_left    : integer := 3;
 		  q_right   : integer := -12);
 	port(
