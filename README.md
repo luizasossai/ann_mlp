@@ -3,6 +3,10 @@ Artificial Neural Network - Multilayer Perceptron
 Software necessários
 * ModelSim-Intel FPGA Edition software.
 
+Autores:
+Luiza Sossai de Sousa - 10748441
+Gustavo Simões Belote - 10748584
+
 
 Realizando os testes
 1. Teste do fixed_package
