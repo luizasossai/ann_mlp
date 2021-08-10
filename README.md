@@ -5,6 +5,7 @@ Software necessários
 
 Autores:
 Luiza Sossai de Sousa - 10748441
+
 Gustavo Simões Belote - 10748584
 
 
