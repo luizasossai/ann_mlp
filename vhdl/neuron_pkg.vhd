@@ -47,7 +47,7 @@ package body neuron_pkg is
 			SIG := (((a2n * X )+ a1) * X) + a0;			
 		end if;
 		return SIG;
-	end activation1;
+	end Activation1;
 	
 	-- Função de Transferência (ou Ativação), adaptada do trabalho:
 	
