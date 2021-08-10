@@ -1,5 +1,8 @@
 Projeto de Descrição de um Neurônio Artificial em VHDL
-Trabalho feito para a disciplina SEL0632 - Linguagem de Descrição de Hardware. Consistem em arquivos VHDL para a formação de um pacote para ponto fixo, um pacote com função de ativação para um neurônio artificial e um programa para neurônio artificial. É apresentado também test bench para os pacotes. É utilizada a versão VHDL de 1993.
+
+Trabalho feito para a disciplina SEL0632 - Linguagem de Descrição de Hardware
+
+Consistem em arquivos VHDL para a formação de um pacote para ponto fixo, um pacote com função de ativação para um neurônio artificial e um programa para neurônio artificial. É apresentado também test bench para os pacotes. É utilizada a versão VHDL de 1993.
 
 
 Autores:
